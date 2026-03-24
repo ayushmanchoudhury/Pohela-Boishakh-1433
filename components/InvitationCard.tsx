@@ -52,7 +52,7 @@ export default function InvitationCard({ isFlipped, onClick }: Props) {
   return (
     <div onClick={onClick} style={{ width: CARD_W, height: CARD_H, perspective: '1400px', cursor: 'pointer' }}>
       <motion.div
-        style={{ width: '100%', height: '100%', position: 'relative', transformStyle: 'preserve-3d' }}
+        style={{ width: '100%', height: '100%', position: 'relative', transformStyle: 'preserve-3d', willChange: 'transform' }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
       >

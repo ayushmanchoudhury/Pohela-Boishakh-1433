@@ -99,7 +99,7 @@ export default function Envelope() {
       <motion.div
         animate={{ scale: stage === 'closed' || stage === 'open' ? 0.88 : 1 }}
         transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        style={{ display: 'inline-block' }}
+        style={{ display: 'inline-block', willChange: 'transform' }}
       >
         <div style={{ position: 'relative', width: ENV_W, height: ENV_H }}>
 
@@ -138,6 +138,7 @@ export default function Envelope() {
                     left: '50%',
                     x: '-50%',
                     bottom: CARD_ANCHOR_BOTTOM,
+                    willChange: 'transform, opacity',
                   }}
                   initial={{ y: 110, opacity: 0 }}
                   animate={{
@@ -171,7 +172,6 @@ export default function Envelope() {
               position: 'absolute',
               bottom: -18, left: '8%', right: '8%', height: 28,
               background: 'radial-gradient(ellipse, rgba(0,0,0,0.22) 0%, transparent 68%)',
-              filter: 'blur(14px)',
               zIndex: 0, pointerEvents: 'none',
             }} />
 
@@ -309,6 +309,7 @@ export default function Envelope() {
                 clipPath: faceClip,
                 zIndex: 11, pointerEvents: 'none',
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.18) 0%, transparent 22%)',
+                willChange: 'opacity',
               }}
               animate={{ opacity: flapOpen ? 1 : 0 }}
               transition={{ duration: 0.35, delay: flapOpen ? 0.28 : 0 }}
@@ -316,7 +317,7 @@ export default function Envelope() {
 
             {/* z=12: V-crease lines (fade out when flap opens) */}
             <motion.svg
-              style={{ position: 'absolute', inset: 0, zIndex: 12, pointerEvents: 'none' }}
+              style={{ position: 'absolute', inset: 0, zIndex: 12, pointerEvents: 'none', willChange: 'opacity' }}
               width={ENV_W} height={ENV_H}
               viewBox={`0 0 ${ENV_W} ${ENV_H}`}
               animate={{ opacity: flapOpen ? 0 : 1 }}
@@ -342,6 +343,7 @@ export default function Envelope() {
                   width: '100%', height: '100%',
                   transformOrigin: 'top center',
                   transformStyle: 'preserve-3d',
+                  willChange: 'transform',
                 }}
                 animate={{ rotateX: flapOpen ? -162 : 0 }}
                 transition={{ duration: 0.82, ease: [0.4, 0, 0.2, 1] }}
@@ -448,6 +450,7 @@ export default function Envelope() {
                   zIndex: 14,
                   pointerEvents: 'none',
                   cursor: 'default',
+                  willChange: 'transform, opacity',
                 }}
                 initial={{ scale: 1, opacity: 1 }}
                 exit={{
@@ -459,17 +462,15 @@ export default function Envelope() {
                   transition: { duration: 0.26, ease: [0.4, 0, 1, 1] },
                 }}
               >
-                <svg width={36} height={36} viewBox="0 0 36 36" overflow="visible">
+                <svg width={36} height={36} viewBox="0 0 36 36" overflow="visible"
+                  style={{ filter: 'drop-shadow(0px 2px 2.5px rgba(0,0,0,0.30))' }}>
                   <defs>
                     <radialGradient id="sealGrad" cx="38%" cy="32%" r="65%">
                       <stop offset="0%"   stopColor="#d64040" />
                       <stop offset="100%" stopColor="#8b1a1a" />
                     </radialGradient>
-                    <filter id="sealShadow" x="-40%" y="-40%" width="180%" height="180%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="rgba(0,0,0,0.30)" />
-                    </filter>
                   </defs>
-                  <circle cx={18} cy={18} r={17} fill="url(#sealGrad)" opacity="0.94" filter="url(#sealShadow)" />
+                  <circle cx={18} cy={18} r={17} fill="url(#sealGrad)" opacity="0.94" />
                   <circle cx={18} cy={18} r={12} fill="none" stroke="rgba(255,215,205,0.45)" strokeWidth="1.1" />
                   <text
                     x={18} y={22}
@@ -513,7 +514,7 @@ export default function Envelope() {
 
       {/* ── Expanded card overlay (portal) ──────────────────────────────────── */}
       {/* Hidden audio player */}
-      <audio ref={audioRef} src="/music.mp3" loop preload="none" />
+      <audio ref={audioRef} src="/pb2026invitation.mp3" loop preload="none" />
 
       {/* Mute / unmute button — appears after first play */}
       {audioStarted && (
@@ -573,13 +574,13 @@ export default function Envelope() {
               transition={{ duration: 0.4 }}
             >
               <motion.div
-                style={{ position: 'absolute', inset: 0 }}
-                initial={{ background: 'rgba(20,14,8,0)' }}
-                animate={{ background: 'rgba(20,14,8,0.22)' }}
+                style={{ position: 'absolute', inset: 0, background: 'rgba(20,14,8,0.22)', willChange: 'opacity' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.55 }}
               />
               <motion.div
-                style={{ position: 'relative', zIndex: 1, cursor: 'pointer' }}
+                style={{ position: 'relative', zIndex: 1, cursor: 'pointer', willChange: 'transform, opacity' }}
                 initial={{ scale: cardPortalScale * 0.46, y: -80, opacity: 0 }}
                 animate={{ scale: cardPortalScale, y: 0, opacity: 1 }}
                 exit={{ scale: cardPortalScale * 0.48, y: -60, opacity: 0 }}
