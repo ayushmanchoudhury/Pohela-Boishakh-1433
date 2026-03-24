@@ -579,9 +579,9 @@ export default function Envelope() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.45, delay: 0.8, hover: { duration: 0.18 }, tap: { duration: 0.18 } }}
-            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)' }}
-            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.45, delay: 0.8 }}
+            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)', transition: { duration: 0.18 } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.18 } }}
             style={{
               position: 'fixed',
               bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
