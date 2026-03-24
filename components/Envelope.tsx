@@ -494,34 +494,41 @@ export default function Envelope() {
             )}
           </AnimatePresence>
 
-          {/* Click-to-open hint */}
-          {stage === 'closed' && (
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.55 }}
-              style={{
-                position: 'absolute',
-                top: ENV_H + 22,
-                left: '50%',
-                x: '-50%',
-                margin: 0,
-                color: 'rgba(98,86,70,0.72)',
-                fontSize: 13,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                fontFamily: 'Georgia, "Times New Roman", serif',
-                whiteSpace: 'nowrap',
-                userSelect: 'none',
-              }}
-            >
-              Click to open
-            </motion.p>
-          )}
 
         </div>
       </motion.div>
       </div>{/* end viewport-scale wrapper */}
+
+      {/* Click-to-open hint — lives outside the scale wrapper so it stays
+          readable on mobile. Vertical position tracks the scaled envelope. */}
+      <AnimatePresence>
+        {stage === 'closed' && (
+          <motion.p
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            transition={{ delay: 0.6, duration: 0.55 }}
+            style={{
+              position: 'fixed',
+              top: `calc(50vh + ${Math.round(ENV_H * envScale * 0.88 / 2) + 20}px)`,
+              left: 0,
+              right: 0,
+              textAlign: 'center',
+              margin: 0,
+              color: 'rgba(98,86,70,0.72)',
+              fontSize: 15,
+              letterSpacing: '0.20em',
+              paddingLeft: '0.20em', // compensate trailing letter-spacing so it looks optically centred
+              textTransform: 'uppercase',
+              fontFamily: 'Georgia, "Times New Roman", serif',
+              userSelect: 'none',
+              pointerEvents: 'none',
+            }}
+          >
+            Click to open
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {/* ── Expanded card overlay (portal) ──────────────────────────────────── */}
       {/* Hidden audio player */}
@@ -578,10 +585,13 @@ export default function Envelope() {
             aria-label="Replay invitation"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.45, delay: 0.8 }}
-            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)', transition: { duration: 0.18 } }}
-            whileTap={{ scale: 0.97, transition: { duration: 0.18 } }}
+            exit={{ opacity: 0, y: 6, transition: { duration: 0.6, ease: 'easeInOut' } }}
+            transition={{
+              opacity: { duration: 0.45, delay: 0.8 },
+              y: { duration: 0.45, delay: 0.8 },
+            }}
+            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)', transition: { duration: 0.2, ease: 'easeOut' } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.12, ease: 'easeOut' } }}
             style={{
               position: 'fixed',
               bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
