@@ -529,15 +529,18 @@ export default function Envelope() {
 
       {/* Mute / unmute button — appears after first play */}
       {audioStarted && (
-        <button
+        <motion.button
           onClick={toggleMute}
           aria-label={muted ? 'Unmute music' : 'Mute music'}
+          whileHover={{ scale: 1.08, boxShadow: '0 4px 20px rgba(0,0,0,0.14)' }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ duration: 0.15 }}
           style={{
             position: 'fixed',
             bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
             right: 'max(16px, env(safe-area-inset-right, 16px))',
             zIndex: 600,
-            width: 44, height: 44,   // 44px min tap target
+            width: 46, height: 46,
             borderRadius: '50%',
             border: '1px solid rgba(120,150,115,0.30)',
             background: 'rgba(238,244,237,0.82)',
@@ -553,18 +556,18 @@ export default function Envelope() {
           }}
         >
           {muted ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
               <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
             </svg>
           ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
               <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
             </svg>
           )}
-        </button>
+        </motion.button>
       )}
 
       {/* Replay button — appears after the full sequence completes */}
@@ -577,31 +580,33 @@ export default function Envelope() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.45, delay: 0.8 }}
+            whileHover={{ scale: 1.05, boxShadow: '0 4px 20px rgba(0,0,0,0.14)' }}
+            whileTap={{ scale: 0.94 }}
             style={{
               position: 'fixed',
               bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
               left: 'max(16px, env(safe-area-inset-left, 16px))',
               zIndex: 600,
-              height: 36,
-              padding: '0 16px',
-              borderRadius: 18,
+              height: 40,
+              padding: '0 18px',
+              borderRadius: 20,
               border: '1px solid rgba(120,150,115,0.30)',
               background: 'rgba(238,244,237,0.82)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
               cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 7,
+              display: 'flex', alignItems: 'center', gap: 8,
               outline: 'none',
               boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
               color: 'rgba(55,80,50,0.75)',
-              fontSize: 11,
+              fontSize: 12,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
               fontFamily: 'Georgia, "Times New Roman", serif',
               touchAction: 'manipulation',
             }}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="1 4 1 10 7 10" />
               <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
             </svg>
@@ -653,9 +658,9 @@ export default function Envelope() {
                   left: '50%',
                   transform: 'translateX(-50%)',
                   margin: 0,
-                  color: 'rgba(255,255,255,0.50)',
-                  fontSize: 10,
-                  letterSpacing: '0.18em',
+                  color: 'rgba(255,255,255,0.62)',
+                  fontSize: 12,
+                  letterSpacing: '0.20em',
                   textTransform: 'uppercase',
                   fontFamily: 'Georgia, "Times New Roman", serif',
                   whiteSpace: 'nowrap',
