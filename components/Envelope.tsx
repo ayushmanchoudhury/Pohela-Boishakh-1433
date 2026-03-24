@@ -73,6 +73,17 @@ export default function Envelope() {
     if (stage === 'flipped')  setStage('expanded')
   }
 
+  const handleReplay = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+    setStage('closed')
+    setSealBroken(false)
+    setAudioStarted(false)
+    setMuted(false)
+  }
+
   const toggleMute = () => {
     if (audioRef.current) {
       audioRef.current.muted = !muted
@@ -486,18 +497,18 @@ export default function Envelope() {
           {/* Click-to-open hint */}
           {stage === 'closed' && (
             <motion.p
-              initial={{ opacity: 0, y: 5 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.55 }}
               style={{
                 position: 'absolute',
-                top: ENV_H + 24,
+                top: ENV_H + 22,
                 left: '50%',
                 x: '-50%',
                 margin: 0,
-                color: 'rgba(98,86,70,0.50)',
-                fontSize: 10,
-                letterSpacing: '0.18em',
+                color: 'rgba(98,86,70,0.72)',
+                fontSize: 13,
+                letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 fontFamily: 'Georgia, "Times New Roman", serif',
                 whiteSpace: 'nowrap',
@@ -555,6 +566,49 @@ export default function Envelope() {
           )}
         </button>
       )}
+
+      {/* Replay button — appears after the full sequence completes */}
+      <AnimatePresence>
+        {(stage === 'expanded' || stage === 'flipped') && (
+          <motion.button
+            onClick={handleReplay}
+            aria-label="Replay invitation"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.45, delay: 0.8 }}
+            style={{
+              position: 'fixed',
+              bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
+              left: 'max(16px, env(safe-area-inset-left, 16px))',
+              zIndex: 600,
+              height: 36,
+              padding: '0 16px',
+              borderRadius: 18,
+              border: '1px solid rgba(120,150,115,0.30)',
+              background: 'rgba(238,244,237,0.82)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 7,
+              outline: 'none',
+              boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
+              color: 'rgba(55,80,50,0.75)',
+              fontSize: 11,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              fontFamily: 'Georgia, "Times New Roman", serif',
+              touchAction: 'manipulation',
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="1 4 1 10 7 10" />
+              <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
+            </svg>
+            Replay
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {mounted && createPortal(
         <AnimatePresence>
