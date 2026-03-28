@@ -29,7 +29,7 @@ export default function Envelope() {
   const [muted, setMuted] = useState(false)
   const [audioStarted, setAudioStarted] = useState(false)
   const [sealBroken, setSealBroken] = useState(false)
-  const [language, setLanguage] = useState<'en' | 'bn'>('en')
+  const [language, setLanguage] = useState<'en' | 'bn'>('bn')
   const audioRef = useRef<HTMLAudioElement>(null)
 
   // ── Responsive scaling ────────────────────────────────────────────────────
@@ -90,6 +90,28 @@ export default function Envelope() {
       audioRef.current.muted = !muted
       setMuted(m => !m)
     }
+  }
+
+  const handleLanguageSwitch = () => {
+    const newLang = language === 'en' ? 'bn' : 'en'
+    setLanguage(newLang)
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+    setStage('closed')
+    setSealBroken(false)
+    setAudioStarted(false)
+    setMuted(false)
+    // Auto-reopen after a brief pause so the reset is visible
+    setTimeout(() => {
+      setSealBroken(true)
+      setAudioStarted(true)
+      audioRef.current?.play().catch(() => {})
+      setTimeout(() => setStage('open'),     SEAL_DELAY)
+      setTimeout(() => setStage('slide'),    SEAL_DELAY + 900)
+      setTimeout(() => setStage('expanded'), SEAL_DELAY + 2700)
+    }, 500)
   }
 
   const flapOpen = stage !== 'closed'
@@ -535,47 +557,87 @@ export default function Envelope() {
       {/* Hidden audio player */}
       <audio ref={audioRef} src="/Eso%20Eso%20He%20Boishakh%20(Rabindra%20Sangeet)%20Piano%20Tutorial%20by%20Arup%20Paul.mp3" loop preload="none" />
 
-      {/* Mute / unmute button — appears after first play */}
+      {/* Bottom-right stack: language toggle (top) + mute (bottom) */}
       {audioStarted && (
-        <motion.button
-          onClick={toggleMute}
-          aria-label={muted ? 'Unmute music' : 'Mute music'}
-          whileHover={{ scale: 1.06, boxShadow: '0 4px 18px rgba(0,0,0,0.12)' }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.18 }}
-          style={{
-            position: 'fixed',
-            bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
-            right: 'max(16px, env(safe-area-inset-right, 16px))',
-            zIndex: 600,
-            width: 46, height: 46,
-            borderRadius: '50%',
-            border: '1px solid rgba(120,150,115,0.30)',
-            background: 'rgba(238,244,237,0.82)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 0,
-            outline: 'none',
-            boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
-            color: 'rgba(55,80,50,0.75)',
-            touchAction: 'manipulation',
-          }}
-        >
-          {muted ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
-          ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-            </svg>
-          )}
-        </motion.button>
+        <div style={{
+          position: 'fixed',
+          bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
+          right: 'max(16px, env(safe-area-inset-right, 16px))',
+          zIndex: 600,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+        }}>
+          {/* Language button — on top of mute */}
+          <motion.button
+            onClick={handleLanguageSwitch}
+            aria-label={language === 'bn' ? 'Switch to English' : 'Switch to Bangla'}
+            whileHover={{ scale: 1.06, boxShadow: '0 4px 18px rgba(0,0,0,0.12)' }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              height: 36,
+              padding: '0 14px',
+              borderRadius: 18,
+              border: '1px solid rgba(120,150,115,0.30)',
+              background: 'rgba(238,244,237,0.82)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center',
+              outline: 'none',
+              boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
+              color: 'rgba(55,80,50,0.75)',
+              fontSize: 'clamp(11px, 3vw, 13px)',
+              letterSpacing: '0.08em',
+              fontFamily: language === 'en'
+                ? "'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif"
+                : 'Georgia, "Times New Roman", serif',
+              touchAction: 'manipulation',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {language === 'bn' ? 'English' : 'বাংলা'}
+          </motion.button>
+
+          {/* Mute button */}
+          <motion.button
+            onClick={toggleMute}
+            aria-label={muted ? 'Unmute music' : 'Mute music'}
+            whileHover={{ scale: 1.06, boxShadow: '0 4px 18px rgba(0,0,0,0.12)' }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              width: 46, height: 46,
+              borderRadius: '50%',
+              border: '1px solid rgba(120,150,115,0.30)',
+              background: 'rgba(238,244,237,0.82)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 0,
+              outline: 'none',
+              boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
+              color: 'rgba(55,80,50,0.75)',
+              touchAction: 'manipulation',
+            }}
+          >
+            {muted ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </svg>
+            )}
+          </motion.button>
+        </div>
       )}
 
       {/* Replay button — appears after the full sequence completes */}
@@ -622,54 +684,6 @@ export default function Envelope() {
               <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
             </svg>
             Replay
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Language toggle button — appears after card is shown */}
-      <AnimatePresence>
-        {(stage === 'expanded' || stage === 'flipped') && (
-          <motion.button
-            onClick={() => setLanguage(l => l === 'en' ? 'bn' : 'en')}
-            aria-label={language === 'en' ? 'Switch to Bangla' : 'Switch to English'}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6, transition: { duration: 0.6, ease: 'easeInOut' } }}
-            transition={{
-              opacity: { duration: 0.45, delay: 0.8 },
-              y: { duration: 0.45, delay: 0.8 },
-            }}
-            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)', transition: { duration: 0.2, ease: 'easeOut' } }}
-            whileTap={{ scale: 0.97, transition: { duration: 0.12, ease: 'easeOut' } }}
-            style={{
-              position: 'fixed',
-              bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 600,
-              height: 42,
-              padding: '0 20px',
-              borderRadius: 21,
-              border: '1px solid rgba(120,150,115,0.30)',
-              background: 'rgba(238,244,237,0.82)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 8,
-              outline: 'none',
-              boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
-              color: 'rgba(55,80,50,0.75)',
-              fontSize: 'clamp(11px, 3vw, 14px)',
-              letterSpacing: '0.10em',
-              textTransform: 'uppercase',
-              fontFamily: language === 'bn'
-                ? 'Georgia, "Times New Roman", serif'
-                : "'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif",
-              touchAction: 'manipulation',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {language === 'en' ? 'বাংলা' : 'English'}
           </motion.button>
         )}
       </AnimatePresence>
