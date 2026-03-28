@@ -29,6 +29,7 @@ export default function Envelope() {
   const [muted, setMuted] = useState(false)
   const [audioStarted, setAudioStarted] = useState(false)
   const [sealBroken, setSealBroken] = useState(false)
+  const [language, setLanguage] = useState<'en' | 'bn'>('en')
   const audioRef = useRef<HTMLAudioElement>(null)
 
   // ── Responsive scaling ────────────────────────────────────────────────────
@@ -162,7 +163,7 @@ export default function Envelope() {
                     : { opacity: { duration: 0.2, delay: 0.55 }, y: { duration: 0 } }
                   }
                 >
-                  <InvitationCard isFlipped={false} onClick={() => {}} />
+                  <InvitationCard isFlipped={false} onClick={() => {}} language={language} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -516,8 +517,8 @@ export default function Envelope() {
               textAlign: 'center',
               margin: 0,
               color: 'rgba(98,86,70,0.72)',
-              fontSize: 15,
-              letterSpacing: '0.20em',
+              fontSize: 'clamp(11px, 3.5vw, 15px)',
+              letterSpacing: '0.18em',
               paddingLeft: '0.20em', // compensate trailing letter-spacing so it looks optically centred
               textTransform: 'uppercase',
               fontFamily: 'Georgia, "Times New Roman", serif',
@@ -532,7 +533,7 @@ export default function Envelope() {
 
       {/* ── Expanded card overlay (portal) ──────────────────────────────────── */}
       {/* Hidden audio player */}
-      <audio ref={audioRef} src="/pb2026invitation.mp3" loop preload="none" />
+      <audio ref={audioRef} src="/Eso%20Eso%20He%20Boishakh%20(Rabindra%20Sangeet)%20Piano%20Tutorial%20by%20Arup%20Paul.mp3" loop preload="none" />
 
       {/* Mute / unmute button — appears after first play */}
       {audioStarted && (
@@ -609,7 +610,7 @@ export default function Envelope() {
               outline: 'none',
               boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
               color: 'rgba(55,80,50,0.75)',
-              fontSize: 14,
+              fontSize: 'clamp(11px, 3vw, 14px)',
               letterSpacing: '0.13em',
               textTransform: 'uppercase',
               fontFamily: 'Georgia, "Times New Roman", serif',
@@ -621,6 +622,54 @@ export default function Envelope() {
               <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
             </svg>
             Replay
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Language toggle button — appears after card is shown */}
+      <AnimatePresence>
+        {(stage === 'expanded' || stage === 'flipped') && (
+          <motion.button
+            onClick={() => setLanguage(l => l === 'en' ? 'bn' : 'en')}
+            aria-label={language === 'en' ? 'Switch to Bangla' : 'Switch to English'}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6, transition: { duration: 0.6, ease: 'easeInOut' } }}
+            transition={{
+              opacity: { duration: 0.45, delay: 0.8 },
+              y: { duration: 0.45, delay: 0.8 },
+            }}
+            whileHover={{ scale: 1.03, boxShadow: '0 4px 18px rgba(0,0,0,0.12)', transition: { duration: 0.2, ease: 'easeOut' } }}
+            whileTap={{ scale: 0.97, transition: { duration: 0.12, ease: 'easeOut' } }}
+            style={{
+              position: 'fixed',
+              bottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 600,
+              height: 42,
+              padding: '0 20px',
+              borderRadius: 21,
+              border: '1px solid rgba(120,150,115,0.30)',
+              background: 'rgba(238,244,237,0.82)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 8,
+              outline: 'none',
+              boxShadow: '0 2px 14px rgba(0,0,0,0.09)',
+              color: 'rgba(55,80,50,0.75)',
+              fontSize: 'clamp(11px, 3vw, 14px)',
+              letterSpacing: '0.10em',
+              textTransform: 'uppercase',
+              fontFamily: language === 'bn'
+                ? 'Georgia, "Times New Roman", serif'
+                : "'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif",
+              touchAction: 'manipulation',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {language === 'en' ? 'বাংলা' : 'English'}
           </motion.button>
         )}
       </AnimatePresence>
@@ -656,7 +705,7 @@ export default function Envelope() {
                 transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
                 onClick={handleCardClick}
               >
-                <InvitationCard isFlipped={stage === 'expanded'} onClick={handleCardClick} />
+                <InvitationCard isFlipped={stage === 'expanded'} onClick={handleCardClick} language={language} />
               </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -669,8 +718,8 @@ export default function Envelope() {
                   transform: 'translateX(-50%)',
                   margin: 0,
                   color: 'rgba(255,255,255,0.62)',
-                  fontSize: 12,
-                  letterSpacing: '0.20em',
+                  fontSize: 'clamp(10px, 2.8vw, 12px)',
+                  letterSpacing: '0.18em',
                   textTransform: 'uppercase',
                   fontFamily: 'Georgia, "Times New Roman", serif',
                   whiteSpace: 'nowrap',

@@ -46,9 +46,13 @@ function CardFace({ src, alt, side, priority }: { src: string; alt: string; side
 interface Props {
   isFlipped: boolean
   onClick: () => void
+  language?: 'en' | 'bn'
 }
 
-export default function InvitationCard({ isFlipped, onClick }: Props) {
+export default function InvitationCard({ isFlipped, onClick, language = 'en' }: Props) {
+  const frontSrc = language === 'bn' ? '/Bangla-Card-Front.jpeg' : '/card-front.png'
+  const backSrc  = language === 'bn' ? '/Bangla-card-back.jpeg'  : '/card-back.png'
+
   return (
     <div onClick={onClick} style={{ width: CARD_W, height: CARD_H, perspective: '1400px', cursor: 'pointer' }}>
       <motion.div
@@ -62,7 +66,7 @@ export default function InvitationCard({ isFlipped, onClick }: Props) {
           borderRadius: 2, overflow: 'hidden',
           boxShadow: '0 28px 70px rgba(0,0,0,0.22), 0 10px 28px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.07)',
         }}>
-          <CardFace src="/card-front.png" alt="Invitation – front" side="front" priority />
+          <CardFace src={frontSrc} alt="Invitation – front" side="front" priority />
         </div>
 
         <div style={{
@@ -72,7 +76,7 @@ export default function InvitationCard({ isFlipped, onClick }: Props) {
           borderRadius: 2, overflow: 'hidden',
           boxShadow: '0 28px 70px rgba(0,0,0,0.22), 0 10px 28px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.07)',
         }}>
-          <CardFace src="/card-back.png" alt="Invitation – back" side="back" />
+          <CardFace src={backSrc} alt="Invitation – back" side="back" />
         </div>
       </motion.div>
     </div>
