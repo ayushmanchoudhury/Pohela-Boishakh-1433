@@ -555,7 +555,7 @@ export default function Envelope() {
 
       {/* ── Expanded card overlay (portal) ──────────────────────────────────── */}
       {/* Hidden audio player */}
-      <audio ref={audioRef} src="/Eso%20Eso%20He%20Boishakh%20(Rabindra%20Sangeet)%20Piano%20Tutorial%20by%20Arup%20Paul.mp3" loop preload="none" />
+      <audio ref={audioRef} src="/Eso%20Eso%20He%20Boishakh%20(Rabindra%20Sangeet)%20Piano%20Tutorial%20by%20Arup%20Paul%20(mp3cut.net).mp3" loop preload="none" />
 
       {/* Bottom-right stack: language toggle (top) + mute (bottom) */}
       {audioStarted && (
