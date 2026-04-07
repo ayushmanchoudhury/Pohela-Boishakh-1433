@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "You're Invited",
-  description: "A wedding invitation",
+  description: "An invitation to the Pohela Boishakh celebration",
 };
 
 export const viewport = {
